@@ -32,6 +32,13 @@ class TestInterpolate(unittest.TestCase):
         pattern.interpolate_duplicate_color_as_stop()
         self.assertEqual(pattern.count_stitch_commands(STOP), 1)
 
+    def test_drop_short(self):
+        """Test drop short"""
+        pattern = EmbPattern()
+        pattern += "red"
+        pattern += (0, 0), (1, 0), (100, 0)
+        pattern.drop_short()
+
     def test_interpolate_to_stop_multi(self):
         """Multiple duplicate color to multiple STOP"""
         pattern = EmbPattern()

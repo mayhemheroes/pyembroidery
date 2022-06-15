@@ -855,6 +855,18 @@ class EmbPattern:
         new_pattern.extras.update(self.extras)
         return new_pattern
 
+    def drop_short(self, min_distance=5):
+        """Drops short stitches from the current pattern"""
+        for i in range(len(self.stitches)-1, 0, -1):
+            stitch = self.stitches[i]
+            previous = self.stitches[i - 1]
+            if (
+                stitch[2] & COMMAND_MASK == STITCH
+                and previous[2] & COMMAND_MASK == STITCH
+                and abs(complex(*stitch[:2]) - complex(*previous[:2])) <= min_distance
+            ):
+                del self.stitches[i]
+
     def get_stable_pattern(self):
         """Gets a stabilized version of the pattern."""
         stable_pattern = EmbPattern()
@@ -1327,14 +1339,16 @@ class EmbPattern:
                 "reader": StcReader,
             }
         )
-        yield ({
-            "description": "Zeng Hsing Embroidery Format",
-            "extension": "zhs",
-            "extensions": ("zhs",),
-            "mimetype": "application/x-zhs",
-            "category": "embroidery",
-            "reader": ZhsReader
-        })
+        yield (
+            {
+                "description": "Zeng Hsing Embroidery Format",
+                "extension": "zhs",
+                "extensions": ("zhs",),
+                "mimetype": "application/x-zhs",
+                "category": "embroidery",
+                "reader": ZhsReader,
+            }
+        )
         yield (
             {
                 "description": "ZSK TC Embroidery Format",
