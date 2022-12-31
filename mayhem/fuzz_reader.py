@@ -27,6 +27,7 @@ def TestOneInput(data):
     fdp = fuzz_helpers.EnhancedFuzzedDataProvider(data)
     try:
         with fdp.ConsumeTemporaryFile(suffix=fdp.PickValueInList(supported_file_suffxes), all_data=True) as file_path:
+            # Uses the suffix to determine which reader to use
             pyembroidery.read(file_path)
     except (TypeError, AttributeError, ValueError):
         # Raised too often
