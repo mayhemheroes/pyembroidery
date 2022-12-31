@@ -22,8 +22,6 @@ def TestOneInput(data):
     except (TypeError, AttributeError, ValueError):
         # Raised too often
         return -1
-    except Exception:
-        return -1
 
 
 def main():
