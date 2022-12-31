@@ -28,7 +28,7 @@ def TestOneInput(data):
     try:
         with fdp.ConsumeTemporaryFile(suffix=fdp.PickValueInList(supported_file_suffxes), all_data=True) as file_path:
             pyembroidery.read(file_path)
-    except TypeError:
+    except (TypeError, AttributeError, ValueError):
         # Raised too often
         return -1
 
