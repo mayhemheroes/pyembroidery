@@ -6,31 +6,23 @@ import fuzz_helpers
 with atheris.instrument_imports(include=["pyembroidery"]):
     import pyembroidery
 
-supported_file_suffxes = [
-    '.pes', '.dst', '.exp',
-    '.jef', '.vp3', '.10o',
-    '.100', '.bro', '.dat',
-    '.dsb', 'dsz', '.emd',
-    '.exy', '.fxy', '.gt',
-    '.hus', '.inb', '.jpx',
-    '.ksm', '.max', '.mit',
-    '.new', '.pcd', '.pcm',
-    '.pcq', '.pcs', '.pec',
-    '.phb', '.phc', '.sew',
-    '.shv', '.stc', '.stx',
-    '.tap', '.tbf', '.tbf',
-    '.u01', '.xxx', '.zhs',
-    '.xzy', '.gcode'
+supported_file_format_readers = [
+    pyembroidery.read_pec, pyembroidery.read_dst, pyembroidery.read_exp,
+    pyembroidery.read_jef, pyembroidery.read_vp3, pyembroidery.read_u01,
+    pyembroidery.read_pec, pyembroidery.read_xxx, pyembroidery.read_gcode
 ]
 
 def TestOneInput(data):
     fdp = fuzz_helpers.EnhancedFuzzedDataProvider(data)
     try:
-        with fdp.ConsumeTemporaryFile(suffix=fdp.PickValueInList(supported_file_suffxes), all_data=True) as file_path:
-            # Uses the suffix to determine which reader to use
-            pyembroidery.read(file_path)
+        # Pick a file-format reader
+        reader = fdp.PickValueInList(supported_file_format_readers)
+        with fdp.ConsumeMemoryFile(all_data=True) as f:
+            reader(f)
     except (TypeError, AttributeError, ValueError):
         # Raised too often
+        return -1
+    except Exception:
         return -1
 
 
