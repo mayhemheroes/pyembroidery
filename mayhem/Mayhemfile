@@ -1,0 +1,6 @@
+project: pyembroidery
+target: reader-fuzz
+cmds:
+  - cmd: /mayhem/fuzz-reader
+    libfuzzer: true
+    timeout: 12
